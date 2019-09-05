@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import InputNumber from 'react-input-just-numbers';
 import styled from 'styled-components'
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
 
 const Input = styled.input `
 font-size: 14px;
@@ -33,18 +33,22 @@ const Form = styled.form `
   justify-content: flex-end;
   align-content: center;
 `
+const initialState = {
+  city: '',
+  state: '',
+  numOfBedrooms: '',
+  numOfBathrooms: '',
+  minRentRange: 1000,
+  maxRentRange: 1000,
+  states: ['AK','AL','AR','AZ','CA','CO','CT','DE','FL','GA','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME',
+  'MI','MN','MO','MS','MT','NC','ND','NE','NH','NJ','NM','NV','NY','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VA','VT','WA','WI','WV','WY'],
+  selectedState: ''
+}
 
 export default class ListingSearchInput extends Component {
   constructor(){
     super()
-    this.state = {
-      city: '',
-      state: '',
-      numOfBedrooms: '',
-      numOfBathrooms: '',
-      minRentRange: 1000,
-      maxRentRange: 1000
-    }
+    this.state = initialState
   }
 
   handleChange = (event) => {
@@ -53,22 +57,42 @@ export default class ListingSearchInput extends Component {
     })
   }
 
+  handleSelectedState = (event) => {
+    this.setState({
+      selectedState: event
+    })
+  }
+
   handleSubmit = (event) => {
     event.preventDefault()
+    console.log(this.state)
+    fetch(`http://localhost:3000/new_search?city=${this.state.city}&state=${this.state.selectedState}&
+    numOfBedrooms=${this.state.numOfBedrooms}&numofBathrooms=${this.state.numOfBathrooms}&minRentRange=${this.state.minRentRange}&maxRentRange=${this.state.maxRentRange}`)
+    this.setState(initialState)
+  }
+
+  renderStates = () => {
+    return this.state.states.map(state => 
+      <Dropdown.Item eventKey={state} key={state} onSelect={this.handleSelectedState} style={{display:'stretch'}}>{state} </Dropdown.Item>
+    )
   }
 
   render() {
+    
     return (
       <div className="listingsearchinput">
         <H2>Find Your Apartments</H2>
         <Form onSubmit={this.handleSubmit}>
           <Label>City:</Label>
           <Input type="text" name="city" value={this.state.city} onChange={this.handleChange}/>
-          <DropdownButton id="dropdown-item-button" title="States">
-            <Dropdown.Item as="button">Action</Dropdown.Item>
-            <Dropdown.Item as="button">Another action</Dropdown.Item>
-            <Dropdown.Item as="button">Something else</Dropdown.Item>
-          </DropdownButton>
+          <br/>
+          <Dropdown >
+            <DropdownButton id="dropdown-basic-button" title="States" drop="down">
+              {this.renderStates()}
+            </DropdownButton>
+          </Dropdown>
+          <br/>
+
           {/* put drop down box for states */}
           <label>Number of Bedrooms</label>
           <InputNumber name="numOfBedrooms" value={this.state.numOfBedrooms} onChange={this.handleChange}/>
