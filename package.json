@@ -2,8 +2,10 @@
   "name": "apartment-listings",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
+"dependencies": {
+    "popper": "^1.0.1",
     "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.12",
     "react-dom": "^16.9.0",
     "react-fontawesome": "^1.6.1",
     "react-input-just-numbers": "^1.0.3",
